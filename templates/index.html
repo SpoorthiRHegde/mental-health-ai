@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindfulAI - Your Mental Health Companion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-brain"></i> MindfulAI</h1>
+            <p>Your compassionate mental health companion</p>
+        </header>
+
+        <div class="main-content">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h2>How are you feeling today?</h2>
+                </div>
+                <div class="chat-messages" id="chat-messages">
+                    <div class="bot-message">
+                        <p>Hello! I'm here to listen and help. You can share your thoughts, feelings, or concerns with me.</p>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <textarea id="user-input" placeholder="Type your thoughts here..."></textarea>
+                    <button id="send-text"><i class="fas fa-paper-plane"></i></button>
+                    <button id="record-audio"><i class="fas fa-microphone"></i></button>
+                </div>
+            </div>
+
+            <div class="side-panel">
+                <div class="mood-tracker">
+                    <h3>Mood Tracker</h3>
+                    <div class="mood-chart" id="mood-chart">
+                        <!-- Chart will be rendered here -->
+                    </div>
+                    <div class="mood-emoji">
+                        <span class="emoji" data-mood="happy">😊</span>
+                        <span class="emoji" data-mood="neutral">😐</span>
+                        <span class="emoji" data-mood="sad">😔</span>
+                        <span class="emoji" data-mood="angry">😠</span>
+                        <span class="emoji" data-mood="anxious">😰</span>
+                    </div>
+                </div>
+
+                <div class="resources">
+                    <h3>Recommended Resources</h3>
+                    <div class="resource-list" id="resource-list">
+                        <p>Resources will appear here based on your input</p>
+                    </div>
+                </div>
+
+                <div class="emergency">
+                    <button id="emergency-btn">
+                        <i class="fas fa-exclamation-triangle"></i> Need Immediate Help?
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio recording modal -->
+    <div class="modal" id="recording-modal">
+        <div class="modal-content">
+            <h3>Recording Audio</h3>
+            <div class="recording-animation">
+                <div class="pulse"></div>
+                <p>Speak now...</p>
+            </div>
+            <button id="stop-recording">Stop Recording</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
