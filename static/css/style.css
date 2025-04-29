@@ -244,7 +244,34 @@ header p {
     margin: 0 auto 15px;
     animation: pulse 1.5s infinite;
 }
+/* Add to style.css */
+.typing {
+    display: flex;
+    gap: 5px;
+}
 
+.typing span {
+    width: 8px;
+    height: 8px;
+    background-color: #6c63ff;
+    border-radius: 50%;
+    display: inline-block;
+    animation: typing 1s infinite ease-in-out;
+}
+
+.typing span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+}
 @keyframes pulse {
     0% { transform: scale(0.95); opacity: 0.7; }
     70% { transform: scale(1.1); opacity: 1; }

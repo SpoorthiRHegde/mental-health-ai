@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const resourceList = document.getElementById('resource-list');
     const moodEmojis = document.querySelectorAll('.emoji');
     
+    // Track if we're waiting for a response
+    let isWaitingForResponse = false;
+
     // Chart initialization
     const moodChart = new Chart(document.getElementById('mood-chart'), {
         type: 'line',
@@ -60,9 +63,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Functions
     function sendTextMessage() {
         const text = userInput.value.trim();
-        if (text) {
+        if (text && !isWaitingForResponse) {
             addMessageToChat(text, 'user');
             userInput.value = '';
+            isWaitingForResponse = true;
+            
+            // Show typing indicator
+            const typingIndicator = document.createElement('div');
+            typingIndicator.classList.add('bot-message');
+            typingIndicator.id = 'typing-indicator';
+            typingIndicator.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
             
             // Send to backend for analysis
             fetch('/analyze_text', {
@@ -72,17 +84,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify({ text: text })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
+                // Remove typing indicator
+                document.getElementById('typing-indicator')?.remove();
+                
                 addMessageToChat(data.response, 'bot');
                 updateResources(data.resources);
-                
-                // Update mood chart with new data
                 updateMoodChart(data.emotion.label);
+                isWaitingForResponse = false;
+                
+                // Follow-up question for engagement
+                if (data.risk_level === 'low') {
+                    setTimeout(() => {
+                        const followUps = [
+                            "Would you like to explore this feeling further?",
+                            "Is there anything else you'd like to share?",
+                            "How has this been affecting your daily life?"
+                        ];
+                        addMessageToChat(followUps[Math.floor(Math.random() * followUps.length)], 'bot');
+                    }, 1500);
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
-                addMessageToChat("I'm having trouble understanding. Could you try again?", 'bot');
+                document.getElementById('typing-indicator')?.remove();
+                if (!isWaitingForResponse) {
+                    addMessageToChat("I'm having trouble understanding. Could you try again?", 'bot');
+                }
+                isWaitingForResponse = false;
             });
         }
     }
